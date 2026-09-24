@@ -3,30 +3,28 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/yael-castro/budget-tracker/internal/app/business"
-	"github.com/yael-castro/budget-tracker/internal/app/driving/csvfile"
+	"github.com/yael-castro/budget-tracker/internal/app/repository"
 )
 
 func main() {
+	// Building main context
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer cancel()
 
-	// Setting logger
-	log.Default().SetFlags(0)
-
 	// Building dependencies
-	amountRepo := csvfile.NewAmountRepository()
-	expensesLogic := business.NewExpensesLogic(amountRepo)
+	reportRepo := repository.NewReportRepository()
+	amountRepo := repository.NewAmountRepositoryV2()
+	reportLogic := business.NewReportLogic(reportRepo, amountRepo)
 
-	// Executing logic
-	remaining, err := expensesLogic.RemainingBudget(ctx)
+	// Executing command
+	err := reportLogic.ReportExpense(ctx)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
-
-	fmt.Println(remaining)
 }

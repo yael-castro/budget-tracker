@@ -48,3 +48,4 @@ go.work.sum
 
 # Other files
 *.csv
+*.csv.bak

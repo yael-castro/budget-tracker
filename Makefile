@@ -4,5 +4,5 @@ build:
 	bash ./scripts/build.bash
 
 summary: build
-	bash ./scripts/summary.bash
+	./build/budget-tracker
 

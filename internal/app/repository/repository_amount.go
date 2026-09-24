@@ -1,4 +1,4 @@
-package csvfile
+package repository
 
 import (
 	"context"
@@ -81,10 +81,12 @@ func (a amountRepository) readFile(_ context.Context, fileName string, category,
 		categoryColumn := upper(row[category])
 		amountColumn := upper(row[amount])
 
-		table[categoryColumn], err = strconv.ParseFloat(amountColumn, 64)
+		amount, err := strconv.ParseFloat(amountColumn, 64)
 		if err != nil {
-			return
+			return nil, err
 		}
+
+		table[categoryColumn] += amount
 	}
 
 	return
