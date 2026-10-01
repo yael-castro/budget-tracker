@@ -66,15 +66,21 @@ func (r reportRepository) SaveExpenseReport(ctx context.Context, report business
 		line = report.Content[index]
 		index++
 
+		hasBudget := "Y"
+		if line.NoBudget {
+			hasBudget = "N"
+		}
+
 		return []string{
 			line.Category,
 			commavalue.ToFloat64(line.Budget),
 			commavalue.ToFloat64(line.Expense),
 			commavalue.ToFloat64(line.Remaining),
+			hasBudget,
 		}, nil
 	}
 
-	headers := []string{"Category", "Budget", "Expense", "Remaining"}
+	headers := []string{"Category", "Budget", "Expense", "Remaining", "Has Budget"}
 
 	return r.saveFile(ctx, reportFile, headers, writeLine)
 }
